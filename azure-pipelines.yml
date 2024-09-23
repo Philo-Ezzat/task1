@@ -20,7 +20,6 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-
     - task: Docker@2
       displayName: Build an image
       inputs:
@@ -30,6 +29,12 @@ stages:
         tags: |
           $(TAG)
 
+  - job: Push
+    displayName: Push
+    dependsOn: Build  # Ensure Push runs after Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
     - task: Docker@2
       displayName: Push image to Docker Hub
       inputs:
@@ -37,18 +42,16 @@ stages:
         repository: $(IMAGE_NAME)
         command: 'push'
         tags: '$(TAG)'
-      condition: succeeded()  # This ensures it runs only if the previous task succeeded
 
 - stage: Deploy
   displayName: Deploy to Container Apps
-  dependsOn: Build  # Make Deploy depend on Build stage
+  dependsOn: Build  # Ensure Deploy runs after Push
   jobs:
   - job: Deploy
     displayName: Deploy
     pool:
       vmImage: ubuntu-latest
     steps:
-
     - task: AzureContainerApps@1
       displayName: Deploy new container version
       inputs:
@@ -59,4 +62,3 @@ stages:
         containerAppEnvironment: '$(CONTAINERAPPS_ENVIRONMENT)'
         targetPort: '3500'
         ingress: 'external'
-      condition: succeeded()  # Ensure this runs only if the previous job succeeded
