@@ -37,10 +37,11 @@ stages:
         repository: $(IMAGE_NAME)
         command: 'push'
         tags: '$(TAG)'
+      condition: succeeded()  # This ensures it runs only if the previous task succeeded
 
 - stage: Deploy
   displayName: Deploy to Container Apps
-  dependsOn: Build  # Add this line to make Deploy depend on Build
+  dependsOn: Build  # Make Deploy depend on Build stage
   jobs:
   - job: Deploy
     displayName: Deploy
@@ -58,3 +59,4 @@ stages:
         containerAppEnvironment: '$(CONTAINERAPPS_ENVIRONMENT)'
         targetPort: '3500'
         ingress: 'external'
+      condition: succeeded()  # Ensure this runs only if the previous job succeeded
