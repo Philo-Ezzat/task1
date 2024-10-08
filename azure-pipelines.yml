@@ -35,14 +35,20 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    - script: |
+        echo "Image Name: $(IMAGE_NAME)"
+        echo "Tag: $(TAG)"
+      displayName: 'Log image and tag'
+
     - task: Docker@2
       displayName: Push image to Docker Hub
       inputs:
-        containerRegistry: 'docker-hub connection'  # Ensure this is set up correctly
+        containerRegistry: 'docker-hub connection'  # Your service connection name
         repository: $(IMAGE_NAME)
         command: 'push'
         tags: |
-          $(TAG)  # Use only the tag, assuming IMAGE_NAME includes the repo
+          $(IMAGE_NAME):$(TAG)  # Ensure this format is correct
+
 
 - stage: Deploy
   displayName: Deploy to Container Apps
