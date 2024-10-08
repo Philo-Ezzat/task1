@@ -5,7 +5,7 @@ resources:
 - repo: self
 
 variables:  
-  IMAGE_NAME: Philo-Ezzat/csharp-backend  # Ensure this is your Docker Hub username/repo
+  IMAGE_NAME: philoezzat/csharp-backend  # Ensure this is your Docker Hub username/repo
   CONTAINERAPPS_APP: back-end-api
   CONTAINERAPPS_ENVIRONMENT: managedEnvironment-task1-947b
   RESOURCE_GROUP: task1
