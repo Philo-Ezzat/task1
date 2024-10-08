@@ -5,7 +5,7 @@ resources:
 - repo: self
 
 variables:  
-  IMAGE_NAME: Philo-Ezzat/csharp-backend
+  IMAGE_NAME: Philo-Ezzat/csharp-backend  # Ensure this is your Docker Hub username/repo
   CONTAINERAPPS_APP: back-end-api
   CONTAINERAPPS_ENVIRONMENT: managedEnvironment-task1-947b
   RESOURCE_GROUP: task1
@@ -13,7 +13,7 @@ variables:
 
 stages:
 - stage: Build
-  displayName: Build and push image
+  displayName: Build and Push Image
   jobs:
   - job: Build
     displayName: Build
@@ -21,7 +21,7 @@ stages:
       vmImage: ubuntu-latest
     steps:
     - task: Docker@2
-      displayName: Build an image
+      displayName: Build Image
       inputs:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/backend_api_csharp/Dockerfile'
@@ -30,7 +30,7 @@ stages:
           $(TAG)
 
   - job: Push
-    displayName: Push
+    displayName: Push Image to Docker Hub
     dependsOn: Build  # Ensure Push runs after Build
     pool:
       vmImage: ubuntu-latest
@@ -39,17 +39,16 @@ stages:
         echo "Image Name: $(IMAGE_NAME)"
         echo "Tag: $(TAG)"
         echo "Final push command: docker push $(IMAGE_NAME):$(TAG)"
-      displayName: 'Log image name, tag, and push command'
+      displayName: 'Log Image Name, Tag, and Push Command'
 
     - task: Docker@2
-      displayName: Push image to Docker Hub
+      displayName: Push Image to Docker Hub
       inputs:
         containerRegistry: 'docker-hub connection'  # Your service connection name
         repository: $(IMAGE_NAME)
         command: 'push'
         tags: |
           $(TAG)  # Ensure only the tag is passed here, since repository includes the full name
-
 
 - stage: Deploy
   displayName: Deploy to Container Apps
@@ -61,10 +60,10 @@ stages:
       vmImage: ubuntu-latest
     steps:
     - task: AzureContainerApps@1
-      displayName: Deploy new container version
+      displayName: Deploy New Container Version
       inputs:
         azureSubscription: 'azure-connection'
-        imageToDeploy: '$(IMAGE_NAME):$(TAG)'
+        imageToDeploy: '$(IMAGE_NAME):$(TAG)'  # Use the full image name with tag
         containerAppName: '$(CONTAINERAPPS_APP)'
         resourceGroup: '$(RESOURCE_GROUP)'
         containerAppEnvironment: '$(CONTAINERAPPS_ENVIRONMENT)'
