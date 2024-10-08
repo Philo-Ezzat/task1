@@ -9,7 +9,7 @@ variables:
   CONTAINERAPPS_APP: back-end-api
   CONTAINERAPPS_ENVIRONMENT: managedEnvironment-task1-947b
   RESOURCE_GROUP: task1
-  TAG: '$(Build.BuildId)'
+  TAG: '$(dockerImageName):$(Build.BuildId)'
 
 stages:
 - stage: Build
