@@ -9,7 +9,7 @@ variables:
   CONTAINERAPPS_APP: back-end-api
   CONTAINERAPPS_ENVIRONMENT: managedEnvironment-task1-947b
   RESOURCE_GROUP: task1
-  TAG: '$(dockerImageName):$(Build.BuildId)'
+  TAG: '$(Build.BuildId)'  # Use Build ID as tag, without prefix
 
 stages:
 - stage: Build
@@ -28,6 +28,7 @@ stages:
         repository: $(IMAGE_NAME)
         tags: |
           $(TAG)
+
   - job: Push
     displayName: Push
     dependsOn: Build  # Ensure Push runs after Build
@@ -37,10 +38,11 @@ stages:
     - task: Docker@2
       displayName: Push image to Docker Hub
       inputs:
-        containerRegistry: 'docker-hub connection'
+        containerRegistry: 'docker-hub connection'  # Ensure this is set up correctly
         repository: $(IMAGE_NAME)
         command: 'push'
-        tags: '$(TAG)'
+        tags: |
+          $(TAG)  # Use only the tag, assuming IMAGE_NAME includes the repo
 
 - stage: Deploy
   displayName: Deploy to Container Apps
@@ -61,4 +63,3 @@ stages:
         containerAppEnvironment: '$(CONTAINERAPPS_ENVIRONMENT)'
         targetPort: '3500'
         ingress: 'external'
-
