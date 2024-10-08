@@ -5,7 +5,7 @@ resources:
 - repo: self
 
 variables:  
-  IMAGE_NAME: philoezzat/csharp-backend
+  IMAGE_NAME: Philo-Ezzat/csharp-backend
   CONTAINERAPPS_APP: back-end-api
   CONTAINERAPPS_ENVIRONMENT: managedEnvironment-task1-947b
   RESOURCE_GROUP: task1
