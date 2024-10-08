@@ -38,7 +38,8 @@ stages:
     - script: |
         echo "Image Name: $(IMAGE_NAME)"
         echo "Tag: $(TAG)"
-      displayName: 'Log image and tag'
+        echo "Final push command: docker push $(IMAGE_NAME):$(TAG)"
+      displayName: 'Log image name, tag, and push command'
 
     - task: Docker@2
       displayName: Push image to Docker Hub
@@ -47,7 +48,7 @@ stages:
         repository: $(IMAGE_NAME)
         command: 'push'
         tags: |
-          $(IMAGE_NAME):$(TAG)  # Ensure this format is correct
+          $(TAG)  # Ensure only the tag is passed here, since repository includes the full name
 
 
 - stage: Deploy
