@@ -20,8 +20,14 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    - script: |
+        echo "Building Docker image..."
+        echo "Image Name: $(IMAGE_NAME)"
+        echo "Tag: $(TAG)"
+      displayName: 'Log Image Name and Tag'
+
     - task: Docker@2
-      displayName: Build Image
+      displayName: Build Docker Image
       inputs:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/backend_api_csharp/Dockerfile'
@@ -29,30 +35,34 @@ stages:
         tags: |
           $(TAG)
 
+    - script: docker images
+      displayName: 'List Docker Images'  # Ensure image was built successfully
+
   - job: Push
     displayName: Push Image to Docker Hub
-    dependsOn: Build  # Ensure Push runs after Build
+    dependsOn: Build
     pool:
       vmImage: ubuntu-latest
     steps:
     - script: |
+        echo "Preparing to push Docker image..."
         echo "Image Name: $(IMAGE_NAME)"
         echo "Tag: $(TAG)"
-        echo "Final push command: docker push $(IMAGE_NAME):$(TAG)"
+        echo "Push command: docker push $(IMAGE_NAME):$(TAG)"
       displayName: 'Log Image Name, Tag, and Push Command'
 
     - task: Docker@2
-      displayName: Push Image to Docker Hub
+      displayName: Push Docker Image to Docker Hub
       inputs:
-        containerRegistry: 'docker-hub connection'  # Your service connection name
+        containerRegistry: 'docker-hub connection'  # Ensure the Docker Hub connection is correct
         repository: $(IMAGE_NAME)
         command: 'push'
         tags: |
-          $(TAG)  # Ensure only the tag is passed here, since repository includes the full name
+          $(TAG)
 
 - stage: Deploy
   displayName: Deploy to Container Apps
-  dependsOn: Build  # Ensure Deploy runs after Push
+  dependsOn: Build
   jobs:
   - job: Deploy
     displayName: Deploy
