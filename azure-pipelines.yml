@@ -7,7 +7,7 @@ resources:
 variables:  
   IMAGE_NAME: philoezzat/csharp-backend  # Ensure this is your Docker Hub username/repo
   CONTAINERAPPS_APP: back-end-api
-  CONTAINERAPPS_ENVIRONMENT: managedEnvironment-task1-947b
+  CONTAINERAPPS_ENVIRONMENT: managedEnvironment-task1-8467
   RESOURCE_GROUP: task1
   TAG: '$(Build.BuildId)'  # Use Build ID as tag, without prefix
 
