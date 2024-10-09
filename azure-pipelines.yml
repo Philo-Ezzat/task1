@@ -31,7 +31,7 @@ stages:
       inputs:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/backend_api_csharp/Dockerfile'
-        repository: $(IMAGE_NAME)
+        repository: philoezzat/csharp-backend        
         tags: |
           $(TAG)
 
